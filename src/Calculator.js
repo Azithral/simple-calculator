@@ -55,18 +55,22 @@ const Calculator = () => {
         let newEq_array = [...eq_array];
         let bracket_start = 0;
         let temp;
+        //console.log(newEq_array);
         for(let i = 0;i< newEq_array.length;i++)
         {
             if(newEq_array[i] === ')')
             {
+                //console.log(newEq_array.slice(bracket_start,i));
                 temp = Solve_expression(newEq_array.slice(bracket_start,i));
-                newEq_array = [...newEq_array.slice(0,bracket_start-1),temp,...newEq_array.slice(i+1,newEq_array.length -1)];
-                i = 0;
+                newEq_array = [...newEq_array.slice(0,bracket_start-1),temp,...newEq_array.slice(i+1,newEq_array.length)];
+                //console.log(temp,newEq_array);
+                i = -1;
             }
-            if(newEq_array[i] === '(')
+            else if(newEq_array[i] === '(')
             {
                 bracket_start = i+1;
             }
+            
         }
         let ans = Solve_expression(newEq_array);
         setAnswer(ans);
@@ -88,6 +92,12 @@ const Calculator = () => {
         for(let i=0;i<arr.length;i++)
         {
             if(arr[i] === divisionSymbol){
+                if(arr[i+1] === '0')
+                {
+                    arr=[''];
+                    setStatus('failure');
+                    return 'Cant divide by zero';
+                }
                 const division = String(Number(arr[i-1]) / Number(arr[i+1]));
                 arr = [...arr.slice(0,i-1),division,...arr.slice(i+2,arr.length)];
                 i = 0;
@@ -169,8 +179,8 @@ const Calculator = () => {
     const handler_equal = () => {
         if(checkOperatorSyntax() && checkPraenthsisSyntax())
         {
-            Solve();
-            setStatus('success');            
+            setStatus('success'); 
+            Solve();                       
         }
         else{
             setAnswer('Syntax Error');
@@ -241,7 +251,7 @@ const Calculator = () => {
             newEq_array.push('');
             setCheckBracket(checkbracket-1);  
         }
-        else if(checkbracket && Number(newEq_array[newEq_array.length -1]))
+        else if(checkbracket && (Number(newEq_array[newEq_array.length -1] ) || newEq_array[newEq_array.length -1] ==='0' ))
         {
             newEq_array.push(')');
             newEq_array.push('');
@@ -265,7 +275,7 @@ const Calculator = () => {
                 newEq_array.push('(');
                
             }
-            else if(Number(newEq_array[newEq_array.length - 1])){
+            else if(newEq_array[newEq_array.length -1] ==='0' || Number(newEq_array[newEq_array.length - 1])  ){
                 newEq_array.push('X','(');
                
             }   
